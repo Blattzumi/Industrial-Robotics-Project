@@ -13,9 +13,9 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
     print(f"Loaded desired trajectory with {len(desired_trajectory)} points.")
 
     executed_ee_positions = []
-    executed_ee_orientations = [] # NEW: List for orientations
+    executed_ee_orientations = [] 
     executed_joint_positions = []
-    executed_joint_velocities = [] # NEW: List for velocities
+    executed_joint_velocities = [] 
 
     print(f"Reading rosbag: {bag_file}")
     bag = rosbag.Bag(bag_file)
@@ -28,7 +28,7 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
                 msg.pose.position.y,
                 msg.pose.position.z
             ])
-            # NEW: Extract orientation (quaternion)
+            
             quat = [
                 msg.pose.orientation.x,
                 msg.pose.orientation.y,
@@ -39,7 +39,7 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
 
         elif topic == '/joint_states':
             executed_joint_positions.append(msg.position)
-            # NEW: Collect velocities
+            
             executed_joint_velocities.append(msg.velocity)
 
     bag.close()
@@ -81,7 +81,7 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
         ax2.grid(True)
         plt.show(block=False)
         
-    # NEW: Figure 3: End-Effector Orientation
+    # Figure 3: End-Effector Orientation
     if executed_ee_orientations.shape[0] > 0:
         fig3 = plt.figure(figsize=(10, 6))
         ax3 = fig3.add_subplot(111)
@@ -96,7 +96,7 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
         ax3.grid(True)
         plt.show(block=False)
 
-    # NEW: Figure 4: Joint Velocities
+    # Figure 4: Joint Velocities
     if executed_joint_velocities.shape[0] > 0:
         fig4 = plt.figure(figsize=(10, 6))
         ax4 = fig4.add_subplot(111)
@@ -110,7 +110,7 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
         ax4.grid(True)
         plt.show(block=False)
 
-    # NEW: Figure 5: Instantaneous Position Error
+    # Figure 5: Instantaneous Position Error
     if executed_ee_positions.shape[0] > 0:
         min_len = min(desired_trajectory.shape[0], executed_ee_positions.shape[0])
         position_error = np.linalg.norm(desired_trajectory[:min_len] - executed_ee_positions[:min_len], axis=1)
@@ -124,7 +124,7 @@ def analyze_trajectory_data(bag_file, desired_trajectory_file):
         ax5.grid(True)
         plt.show(block=False)
 
-    plt.show() # This final show call will block until all figures are closed.
+    plt.show() 
 
 
     # --- Calculate and print errors/discrepancies ---
